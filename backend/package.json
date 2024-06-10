@@ -1,0 +1,29 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Save the left over food of the restaurant and making it availble to poor people.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chandrakanth93986/hungry-bite.git"
+  },
+  "author": "Koduru Chandrakanth Reddy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chandrakanth93986/hungry-bite/issues"
+  },
+  "homepage": "https://github.com/chandrakanth93986/hungry-bite#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongodb": "^6.7.0",
+    "mongoose": "^8.4.1",
+    "nodemon": "^3.1.3"
+  }
+}
