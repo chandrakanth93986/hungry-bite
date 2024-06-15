@@ -1,17 +1,50 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import logo from '../../assets/logo.png'
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const Register = () => {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const [err, setErr] = useState('')
 
-    const handleFormSubmit = (userCred) => {
+    const handleFormSubmit = async (userCred) => {
         console.log(userCred)
+        let response;
+        const registerToast = new Promise(async (resolve, reject) => {
+            try {
+                response = await axios.post('/api/user/register', userCred)
+                console.log(response.status);
+                if (response?.status === 200 || response?.status === 201) {
+                    console.log(response?.status);
+                    resolve()
+                }
+            } catch (error) {
+                console.log(error)
+                setErr(error.response.data.message)
+                reject()
+            }
+        })
+
+        await toast.promise(
+            registerToast,
+            {
+                success: 'Registration Successful! 👌',
+                pending: 'Loading...',
+                error: 'Registration Failed! 🤯'
+            },
+            {
+                theme: "dark"
+            }
+        )
     }
 
     return (
         <div className=''>
             <div className='h-screen flex flex-col items-center justify-center mx-auto md:mx-4'>
+                {
+                    err.length > 0 && <p className='text-red-500 text-center mb-4 text-xl'>{err}</p>
+                }
                 <form onSubmit={handleSubmit(handleFormSubmit)} className='b min-w-96 min-h-[50%] bg-green-700 text-white p-8 rounded-xl w-[25%]'>
                     <div className='text-center mb-5'>
                         <img src={logo} width={150} height={150} alt='Logo' className='r rounded-full block m-auto' />
