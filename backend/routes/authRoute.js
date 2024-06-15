@@ -7,7 +7,8 @@ import jwt from 'jsonwebtoken'
 
 loginRouter.post('/login', expressAsyncHandler(async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const body = req.body;
+        const { email, password } = body
         const user = await User.findOne({ email })
         if (!user) {
             return res.status(404).json({ message: "Invalid credintials!" });
@@ -25,7 +26,7 @@ loginRouter.post('/login', expressAsyncHandler(async (req, res) => {
             maxAge: 86400000
         })
 
-        return res.status(201).json({ message: "User Login successful!", userId: user._id })
+        return res.status(201).json({ message: "User Login successful!", token: token , email: email, _id: user._id})
     } catch (error) {
         console.log(error)
         return res.status(500).json({message: "Login Failed!"})

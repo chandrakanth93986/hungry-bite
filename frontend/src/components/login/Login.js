@@ -1,17 +1,53 @@
-import React from 'react'
-import logo from '../../assets/logo.png'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import logo from '../../assets/logo.png'
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const Login = () => {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const [err, setErr] = useState('')
 
-    const handleFormSubmit = (userCred) => {
-        console.log(userCred)
+    const handleFormSubmit = async (userObj) => {
+        console.log(userObj)
+        let response;
+        const registerToast = new Promise(async (resolve, reject) => {
+            try {
+                response = await axios.post('/api/auth/login', userObj)
+                console.log(response);
+                if (response?.status === 200 || response?.status === 201) {
+                    console.log(response?.status);
+                    localStorage.setItem('token', response.data.token)
+                    localStorage.setItem('email', response.data.email)
+                    localStorage.setItem('_id', response.data._id)
+                    resolve()
+                }
+            } catch (error) {
+                console.log(error)
+                setErr(error.response.data.message)
+                reject()
+            }
+        })
+
+        await toast.promise(
+            registerToast,
+            {
+                success: 'Login Successful! 👌',
+                pending: 'Loading...',
+                error: 'Login Failed! 🤯'
+            },
+            {
+                theme: "dark"
+            }
+        )
     }
 
     return (
         <div>
             <div className='h-screen flex flex-col items-center justify-center mx-auto md:mx-4'>
+                {
+                    err.length > 0 && <p className='text-red-500 text-center mb-4 text-xl'>{err}</p>
+                }
                 <form
                     onSubmit={handleSubmit(handleFormSubmit)}
                     className="b min-w-96 min-h-[50%] bg-green-700 text-white p-8 rounded-xl w-[25%]"
