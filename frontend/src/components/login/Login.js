@@ -23,7 +23,11 @@ const Login = () => {
                 if (response?.status === 200 || response?.status === 201) {
                     console.log(response?.status);
                     localStorage.setItem('token', response.data.token)
-                    setUser(response.data.userCred)
+                    localStorage.setItem('email', response.data?.userCred?.email)
+                    localStorage.setItem('username', response.data?.userCred?.username)
+                    localStorage.setItem('address', response.data?.userCred?.address)
+
+                    setUser(response.data?.userCred)
                     resolve()
                     navigate('/dashboard')
                 }
