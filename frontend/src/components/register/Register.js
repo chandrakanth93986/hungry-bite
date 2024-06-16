@@ -3,10 +3,12 @@ import { useForm } from 'react-hook-form'
 import logo from '../../assets/logo.png'
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const [err, setErr] = useState('')
+    const navigate = useNavigate()
 
     const handleFormSubmit = async (userCred) => {
         console.log(userCred)
@@ -18,6 +20,7 @@ const Register = () => {
                 if (response?.status === 200 || response?.status === 201) {
                     console.log(response?.status);
                     resolve()
+                    navigate('/login')
                 }
             } catch (error) {
                 console.log(error)
