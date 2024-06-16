@@ -1,20 +1,22 @@
-import {createBrowserRouter, RouterProvider} from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css';
 import ErrorPage from './components/ErrorPage';
 import Home from './components/home/Home';
 import RootLayout from './RootLayout';
 import Register from './components/register/Register';
 import Login from './components/login/Login';
+import Dashboard from './components/dashboard/Dashboard';
+import AuthContextProvider from './context/AuthContext/AuthContextProvider';
 
 function App() {
-  const browserRouter=createBrowserRouter([{
-    path:'',
-    element:<RootLayout />,
-    errorElement:<ErrorPage />,
-    children:[
+  const browserRouter = createBrowserRouter([{
+    path: '',
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
+    children: [
       {
-        path:'',
-        element:<Home />
+        path: '',
+        element: <Home />
       },
       {
         path: '/register',
@@ -23,14 +25,20 @@ function App() {
       {
         path: '/login',
         element: <Login />
+      },
+      {
+        path: '/dashboard',
+        element: <Dashboard />
       }
     ]
   }])
 
   return (
-    <div>
-      <RouterProvider router={browserRouter} />
-    </div>
+    <AuthContextProvider>
+      <div>
+        <RouterProvider router={browserRouter} />
+      </div>
+    </AuthContextProvider>
   );
 }
 

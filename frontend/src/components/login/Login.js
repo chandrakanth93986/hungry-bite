@@ -1,12 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import logo from '../../assets/logo.png'
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import AuthContext from '../../context/AuthContext/AuthContext';
 
 const Login = () => {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const [err, setErr] = useState('')
+    const navigate = useNavigate()
+    const {setUser} = useContext(AuthContext)
 
     const handleFormSubmit = async (userObj) => {
         console.log(userObj)
@@ -18,9 +23,9 @@ const Login = () => {
                 if (response?.status === 200 || response?.status === 201) {
                     console.log(response?.status);
                     localStorage.setItem('token', response.data.token)
-                    localStorage.setItem('email', response.data.email)
-                    localStorage.setItem('_id', response.data._id)
+                    setUser(response.data.userCred)
                     resolve()
+                    navigate('/dashboard')
                 }
             } catch (error) {
                 console.log(error)

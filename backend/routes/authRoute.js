@@ -26,7 +26,7 @@ loginRouter.post('/login', expressAsyncHandler(async (req, res) => {
             maxAge: 86400000
         })
 
-        return res.status(201).json({ message: "User Login successful!", token: token , email: email, _id: user._id})
+        return res.status(201).json({ message: "User Login successful!", token: token, userCred: user})
     } catch (error) {
         console.log(error)
         return res.status(500).json({message: "Login Failed!"})
