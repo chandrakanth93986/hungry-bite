@@ -1,2 +1,2 @@
 # hungry-bite
-# hungry-bite It is a food saving website with the aim of saving the left over food of the restaurant and making it available for low costs for the poor people.
+It is a food-saving website to save the restaurant's leftover food and make it available for low costs for the poor.
