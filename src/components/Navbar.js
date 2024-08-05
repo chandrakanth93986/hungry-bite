@@ -34,8 +34,8 @@ const Navbar = () => {
                                 <MdWavingHand className='text-2xl'/>
                                 &nbsp;&nbsp; <span className='text-amber-300 text-3xl font-serif'>{session.data?.user?.username || session.data?.user?.name.split(' ')[0]}</span>
                             </div>
-                            <Link href={'/personal-space'} className={`${path === '/personal-space' ? 'rounded-md bg-burlywood text-black px-4 py-2' : 'text-white'}`}>Personal-Space</Link>
-                            <button onClick={handleSignout} className='px-4 py-2 bg-burlywood text-black rounded-md'>Sign Out</button>
+                            <Link href={'/register'} className={`${path === '/register' ? 'rounded-md bg-white text-green-700 px-4 py-2' : 'text-white flex items-center'}`}>Register</Link>
+                            <button onClick={handleSignout} className='px-4 py-2 bg-white text-green-700 rounded-full'>Sign Out</button>
                         </div>
                     ) : (
                         <div>
