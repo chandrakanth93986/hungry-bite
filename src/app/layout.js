@@ -3,6 +3,7 @@ import "./globals.css";
 import AuthProvider from "@/providers/AuthProvider";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +21,8 @@ export default function RootLayout({ children }) {
             <div className="min-h-screen">
               <Toaster position="top-center" toastOptions={{ duration: 7000 }} />
               {children}
-            </div>
+          </div>
+          <Footer />
         </body>
       </AuthProvider>
     </html>
