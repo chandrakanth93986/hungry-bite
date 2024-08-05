@@ -78,6 +78,9 @@ const Register = () => {
             <div className='text-center mt-8'>
               <button type="submit" className='px-4 py-2 bg-amber-300 text-green-700 rounded-md'>Register</button>
             </div>
+            <div>
+              <p className='text-center mt-8'>Already have an account? <a href='/login' className='text-amber-300'><br /><span className='text-lg underline'>Login!</span></a></p>
+            </div>
           </div>
         </form>
       </div>
