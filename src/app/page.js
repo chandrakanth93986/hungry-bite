@@ -21,6 +21,7 @@ export default function Home() {
         >
           <div className="text-3xl md:text-7xl font-bold dark:text-white text-center">
             "Helping hungry people - fills your belly!"
+            <br />
             "Let's fill our belly with good food without wastage!"
           </div>
           <div className="font-extralight text-base md:text-4xl dark:text-neutral-200 py-4">

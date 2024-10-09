@@ -23,15 +23,21 @@ const Navbar = () => {
         <div>
             <nav className='bg-green-700 p-4 text-white flex justify-between items-center'>
                 <Link href={'/'}>
-                    <div className=''>
+                    <div className='flex gap-3 items-center'>
                         <Image src={logo} width={50} height={100} alt='Logo' className='r rounded-full block m-auto' />
+                        <span className='text-2xl font-bold'>Hungry-Bite</span>
+                    </div>
+                </Link>
+                <Link href={'/restaurent/register'}>
+                    <div className='text-xl text-bold bg-white px-4 py-2 text-green-700 rounded-lg cursor-pointer'>
+                        Restaurent/Dhaba
                     </div>
                 </Link>
                 {
                     session.status === 'authenticated' ? (
                         <div className='text-center flex gap-5 items-center'>
                             <div className='text-xl flex items-center justify-center'>
-                                <MdWavingHand className='text-2xl'/>
+                                <MdWavingHand className='text-2xl' />
                                 &nbsp;&nbsp; <span className='text-amber-300 text-3xl font-serif'>{session.data?.user?.username || session.data?.user?.name.split(' ')[0]}</span>
                             </div>
                             {/* <Link href={'/register'} className={`${path === '/register' ? 'rounded-md bg-white text-green-700 px-4 py-2' : 'text-white flex items-center'}`}>Register</Link> */}

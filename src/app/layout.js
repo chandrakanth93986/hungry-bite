@@ -18,9 +18,9 @@ export default function RootLayout({ children }) {
       <AuthProvider>
         <body className={inter.className}>
           <Navbar />
-            <div className="min-h-screen">
-              <Toaster position="top-center" toastOptions={{ duration: 7000 }} />
-              {children}
+          <div className="min-h-screen">
+            <Toaster position="top-center" toastOptions={{ duration: 7000 }} />
+            {children}
           </div>
           <Footer />
         </body>
