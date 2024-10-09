@@ -20,10 +20,11 @@ export default function Home() {
           className="relative flex flex-col gap-4 items-center justify-center px-4"
         >
           <div className="text-3xl md:text-7xl font-bold dark:text-white text-center">
-            Background lights are cool you know.
+            "Helping hungry people - fills your belly!"
+            "Let's fill our belly with good food without wastage!"
           </div>
           <div className="font-extralight text-base md:text-4xl dark:text-neutral-200 py-4">
-            And this, is chemical burn.
+            This website helps you to fill your belly with low cost food.
           </div>
         </motion.div>
       </AuroraBackground>
