@@ -6,7 +6,9 @@ export async function POST(req) {
     await dbConnect()
 
     try {
-        const { restaurantName, ownerName, email, phone, city, state, postalCode, password } = await req.json()
+        const { restaurentName, ownerName, email, phone, city, state, postalCode, password } = await req.json()
+
+        console.log(restaurentName, ownerName, email, phone, city, state, postalCode, password)
         
         const existingEmail = await ownerModel.findOne({ email })
         if (existingEmail) {
@@ -21,18 +23,29 @@ export async function POST(req) {
 
         const hashedPassword = await bcryptjs.hash(password, 10);
 
-        // const newUser = new ownerModel({
-        //     username,
-        //     email,
-        //     password: hashedPassword,
-        //   });
-    
-        // await newUser.save();
-        
-        const newOwner = await ownerModel.create({
-            restaurantName, ownerName, email, phone, city, state, postalCode,
+        const newOwner = new ownerModel({
+            restaurentName,
+            ownerName,
+            email,
+            phone,
+            city,
+            state,
+            postalCode,
             password: hashedPassword
-        })
+          });
+    
+        await newOwner.save();
+        
+        // const newOwner = await ownerModel.create({
+        //     restaurantName,
+        //     ownerName,
+        //     email,
+        //     phone,
+        //     city,
+        //     state,
+        //     postalCode,
+        //     password: hashedPassword
+        // })
         
         if (!newOwner) {
             return Response.json(
