@@ -15,7 +15,7 @@ const RestaurentRegister = () => {
                         <div>
                             <div className='flex gap-3 '>
                                 <div className='flex flex-col gap-1 mb-3 w-full'>
-                                    <label htmlFor="restaurent-name">Restaurent-Name</label>
+                                    <label htmlFor="restaurentName">Restaurent-Name</label>
                                     <input
                                         type="text"
                                         className='rounded-md w-full p-2 text-black'
@@ -23,7 +23,7 @@ const RestaurentRegister = () => {
                                     />
                                 </div>
                                 <div className='flex flex-col gap-1 mb-3 w-full'>
-                                    <label htmlFor="owner-name">Owner-Name</label>
+                                    <label htmlFor="ownerName">Owner-Name</label>
                                     <input
                                         type="text"
                                         className='rounded-md w-full p-2 text-black'
@@ -71,7 +71,7 @@ const RestaurentRegister = () => {
                                     />
                                 </div>
                                 <div className='flex flex-col gap-1 mb-3'>
-                                    <label htmlFor="postal-code">Postal-Code</label>
+                                    <label htmlFor="postalCode">Postal-Code</label>
                                     <input
                                         type="number"
                                         className='rounded-md w-full p-2 text-black'
