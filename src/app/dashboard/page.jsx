@@ -12,13 +12,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (status === 'unauthenticated') {
-        return router.push('/login')
+      return router.push('/login')
     }
-}, [status, session])
+  }, [status, session])
 
-if (status === 'loading') {
+  if (status === 'loading') {
     return <div className='h-screen bg-green-700 text-white text-3xl flex justify-center items-center'>Loading...</div>
-}
+  }
 
   return (
     <div>Dashboard</div>

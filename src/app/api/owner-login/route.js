@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs';
 import dbConnect from '@/lib/dbConnect';
 import ownerModel from '@/models/Owner';
+import jwt from 'jsonwebtoken';
+
 
 export async function POST(req) {
     await dbConnect();
@@ -25,5 +27,8 @@ export async function POST(req) {
             { status: 400 }
         );
     }
-    return Response.json({ success: true }, { status: 200 });
+
+    const token = jwt.sign({email}, process?.env?.SECRET_KEY, { expiresIn: '1h' });
+
+    return Response.json({ success: true, token: token }, { status: 200 });
 }

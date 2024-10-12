@@ -28,12 +28,17 @@ const RestaurentLogin = () => {
     console.log(data);
     try {
       const res = await axios.post('/api/owner-login', data);
-      if (res.status !== 400) {
-        router.push('/');
+      if (res.data.success) {
+        router.push('/restaurent/dashboard');
       }
+      if (res.data.success) {
+        toast.success('Login successful!');
+      }
+      localStorage.setItem('token', res.data.token);
     } catch (error) {
       console.log(error);
       setErr(error.response.data.message);
+      toast.error('Login Failed!');
     }
   };
 
@@ -68,7 +73,7 @@ const RestaurentLogin = () => {
                 {...register("email", { required: true })}
               />
               {errors.email?.type === "required" && (
-                <p className="text-amber-200">*Email/Username is required!</p>
+                <p className="text-amber-200">*Email is required!</p>
               )}
             </div>
 

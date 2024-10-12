@@ -9,6 +9,7 @@ import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { MdWavingHand } from "react-icons/md";
+import jwt from 'jsonwebtoken';
 
 const Navbar = () => {
     const router = useRouter()
@@ -16,7 +17,8 @@ const Navbar = () => {
     const session = useSession();
     const handleSignout = async () => {
         await signOut()
-        router.push('/login')
+        router.push('/')
+        localStorage.removeItem('token')
     }
 
     return (
@@ -34,13 +36,12 @@ const Navbar = () => {
                     </div>
                 </Link>
                 {
-                    session.status === 'authenticated' ? (
+                    (session.status === 'authenticated' || localStorage?.getItem('token')) ? (
                         <div className='text-center flex gap-5 items-center'>
                             <div className='text-xl flex items-center justify-center'>
                                 <MdWavingHand className='text-2xl' />
-                                &nbsp;&nbsp; <span className='text-amber-300 text-3xl font-serif'>{session.data?.user?.username || session.data?.user?.name.split(' ')[0]}</span>
+                                &nbsp;&nbsp; <span className='text-amber-300 text-3xl font-serif'>{session.data?.user?.username || session.data?.user?.name.split(' ')[0] || jwt.decode(localStorage?.getItem('token'))?.email}</span>
                             </div>
-                            {/* <Link href={'/register'} className={`${path === '/register' ? 'rounded-md bg-white text-green-700 px-4 py-2' : 'text-white flex items-center'}`}>Register</Link> */}
                             <button onClick={handleSignout} className='px-4 py-2 bg-white text-green-700 rounded-full'>Sign Out</button>
                         </div>
                     ) : (
