@@ -1,3 +1,5 @@
+"Hungry-Bite"! It is a food saving website with the aim of saving the left over food of the restaurant and making it available for low costs for the poor people.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
