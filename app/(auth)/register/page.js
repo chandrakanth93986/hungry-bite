@@ -77,7 +77,7 @@ const Register = () => {
               {errors.password?.type === 'required' && (<p className='text-amber-200'>*Password is Required!</p>)}
             </div>
             <div className='text-center mt-8'>
-              <button type="submit" className='px-4 py-2 bg-amber-300 text-primary rounded-md'>Register</button>
+              <button type="submit" className='px-4 py-2 bg-amber-300 text-white rounded-md'>Register</button>
             </div>
           </div>
         </form>
