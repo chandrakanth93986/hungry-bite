@@ -16,15 +16,24 @@ const PartnerLogin = () => {
     const onSubmit = async (data) => {
         try {
             const response = await axios.post("/api/partner-login", data);
+            
             if (response.data.success) {
+                const { token } = response.data;
+    
+                localStorage.setItem("partnerToken", token); 
+                
+                // Dispatch a custom event for the navbar to listen to
+                window.dispatchEvent(new Event("partnerAuthChange"));
+    
                 toast.success("Login successful!");
-                router.push("/");
+                router.push("/partner-dashboard");
             }
         } catch (error) {
             setErrorMsg(error.response?.data?.message || "Login failed.");
             toast.error("Login Failed!");
         }
     };
+    
 
     return (
         <div className="flex justify-center items-center flex-col min-h-screen bg-background">

@@ -6,19 +6,7 @@ export async function POST(req) {
     await dbConnect()
 
     try {
-        const { email, username, password } = await req.json()
-        const existingUsername = await userModel.findOne({ username })
-
-        if (existingUsername) {
-            return Response.json(
-                {
-                    success: false,
-                    message: 'Username is already taken!',
-                },
-                { status: 400 }
-            );
-        }
-
+        const { email, username, password, phone } = await req.json()
         const existingEmail = await userModel.findOne({ email })
         if (existingEmail) {
             return Response.json(
@@ -35,7 +23,8 @@ export async function POST(req) {
         const newUser = await userModel.create({
             email,
             username,
-            password: hashedPassword
+            password: hashedPassword,
+            phone
         })
         
         if (!newUser) {

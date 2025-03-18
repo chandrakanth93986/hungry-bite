@@ -59,6 +59,15 @@ const Register = () => {
               {errors.email?.type === 'required' && (<p className='text-amber-200'>*Email is required!</p>)}
             </div>
             <div className='flex flex-col gap-1 mb-3'>
+              <label htmlFor="phone">Phone</label>
+              <input
+                type="number"
+                className='rounded-md w-full p-2 text-black'
+                placeholder='xxxxxxxxxx'
+                {...register('phone', { required: true })} />
+              {errors.phone?.type === 'required' && (<p className='text-amber-200'>*Phone is required!</p>)}
+            </div>
+            <div className='flex flex-col gap-1 mb-3'>
               <label htmlFor="username">Username</label>
               <input
                 type="text"

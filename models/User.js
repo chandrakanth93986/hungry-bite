@@ -7,6 +7,11 @@ const UserSchema = new Schema({
         trim: true,
         unique: true,
     },
+    phone: {
+        type: String,
+        required: [true, 'Phone number is required'],
+        unique: true
+    },
     email: {
         type: String,
         required: [true, 'Email is required'],
@@ -16,6 +21,12 @@ const UserSchema = new Schema({
         type: String,
         required: [true, 'Password is required'],
     },
+    previousOrders: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Order", 
+        },
+    ],
     admin: {
         type: Boolean,
         default: false
