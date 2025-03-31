@@ -97,14 +97,14 @@ const PartnerDashboard = () => {
             toast.error("Please fill all fields!");
             return;
         }
-    
+
         try {
             const token = localStorage.getItem("partnerToken");
             await axios.post("/api/food-items", newFoodItem, { headers: { Authorization: `Bearer ${token}` } });
-    
+
             const res = await axios.get("/api/partner-info", { headers: { Authorization: `Bearer ${token}` } });
             setFoodItems(res.data.restaurant.foodItems);
-    
+
             setNewFoodItem({ name: "", price: "", description: "", imageUrl: defaultImg.src });
             setImageUrl(defaultImg.src);
             toast.success("Food item added!");
@@ -112,7 +112,7 @@ const PartnerDashboard = () => {
             toast.error("Error adding food item.");
         }
     };
-    
+
 
 
     // Fetch Surprise Bag Details
@@ -191,23 +191,40 @@ const PartnerDashboard = () => {
                 <p className="text-center text-gray-500">Loading...</p>
             ) : partner ? (
                 <div className="bg-white p-6 rounded-lg shadow-md">
-                    {/* Restaurant Name as Header */}
-                    <h1 className="text-3xl font-bold text-center text-primary mb-6 uppercase">Welcome!
-                        <br />
-                        <span className="underline text-secondary">
-                            {partner.restaurantName}
-                        </span>
-                    </h1>
-
                     {/* Restaurant Image */}
-                    {partner.imageUrl && (
-                        <div className="flex justify-center">
-                            <img src={partner.imageUrl} alt={partner.restaurantName} className="w-40 h-40 object-cover rounded-lg shadow-md" />
-                        </div>
-                    )}
+                    <div className="flex items-center justify-left gap-8 p-6 w-fit max-w-[100%] bg-white shadow-md rounded-lg">
 
-                    <p className="text-gray-600 text-center mt-2">Phone: <strong>{partner.phone}</strong></p>
-                    <p className="text-gray-600 text-center">Email: <strong>{partner.email}</strong></p>
+                        <div>
+                            {partner.imageUrl && (
+                                <div className="w-72 h-72 flex-shrink-0">
+                                    <img
+                                        src={partner.imageUrl}
+                                        alt={partner.restaurantName}
+                                        className="w-full h-full object-cover rounded-lg shadow-lg border-2 border-gray-300"
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex flex-col">
+                            <div className="text-left">
+                                <h1 className="text-4xl font-extrabold text-secondary uppercase tracking-wide">
+                                    {partner.restaurantName}
+                                </h1>
+                            </div>
+                            {/* Contact Details */}
+                            <div className="mt-4 text-gray-700 space-y-1 text-lg">
+                                <p>📞 Phone: <strong>{partner.phone}</strong></p>
+                                <p>✉️ Email: <strong>{partner.email}</strong></p>
+                                <p>📍 Address: <strong>{partner.address || "Not provided"}</strong>
+                                </p>
+                                <p>🕒 Open Hours: <strong>{partner.openingTime || "Not specified"}</strong> - <strong>{partner.closingTime || "Not specified"}</strong></p>
+                                <p>⭐ Ratings: <strong>{partner.averageRating || "No ratings yet"}</strong></p>
+                                <p>🥘 Cuisine Type: <strong>{partner.type || "Not specified"}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+
 
                     {/* Food Items */}
                     {loading ? (
