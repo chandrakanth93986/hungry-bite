@@ -35,7 +35,7 @@ const PartnerDashboard = () => {
             }
 
             try {
-                const res = await axios.get("/api/partner-info", { headers: { Authorization: `Bearer ${token}` } });
+                const res = await axios.get("/api/partner/partner-info", { headers: { Authorization: `Bearer ${token}` } });
                 setPartner(res.data.restaurant);
             } catch (error) {
                 toast.error("Error fetching restaurant details.");
@@ -52,7 +52,7 @@ const PartnerDashboard = () => {
         const fetchOrders = async () => {
             try {
                 const token = localStorage.getItem("partnerToken");
-                const res = await axios.get("/api/orders", { headers: { Authorization: `Bearer ${token}` } });
+                const res = await axios.get("/api/partner/orders", { headers: { Authorization: `Bearer ${token}` } });
                 setOrders(res?.data?.pendingOrders);
             } catch (error) {
                 toast.error("Error fetching orders.");
@@ -71,7 +71,7 @@ const PartnerDashboard = () => {
                     return;
                 }
 
-                const { data } = await axios.get("/api/food-items", {
+                const { data } = await axios.get("/api/partner/food-items", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -100,9 +100,9 @@ const PartnerDashboard = () => {
 
         try {
             const token = localStorage.getItem("partnerToken");
-            await axios.post("/api/food-items", newFoodItem, { headers: { Authorization: `Bearer ${token}` } });
+            await axios.post("/api/partner/food-items", newFoodItem, { headers: { Authorization: `Bearer ${token}` } });
 
-            const res = await axios.get("/api/partner-info", { headers: { Authorization: `Bearer ${token}` } });
+            const res = await axios.get("/api/partner/partner-info", { headers: { Authorization: `Bearer ${token}` } });
             setFoodItems(res.data.restaurant.foodItems);
 
             setNewFoodItem({ name: "", price: "", description: "", imageUrl: defaultImg.src });
@@ -122,7 +122,7 @@ const PartnerDashboard = () => {
 
             try {
                 const token = localStorage.getItem("partnerToken");
-                const res = await axios.get("/api/update-surprise-bags", {
+                const res = await axios.get("/api/partner/update-surprise-bags", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -160,7 +160,7 @@ const PartnerDashboard = () => {
 
         try {
             const token = localStorage.getItem("partnerToken");
-            const response = await axios.post("/api/update-surprise-bags", updatedBag, { headers: { Authorization: `Bearer ${token}` } });
+            const response = await axios.post("/api/partner/update-surprise-bags", updatedBag, { headers: { Authorization: `Bearer ${token}` } });
 
             if (response.data.success) {
                 setSurpriseBag(response.data.surpriseBag); // Update state with new data

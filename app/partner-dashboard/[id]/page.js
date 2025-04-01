@@ -27,7 +27,7 @@ export default function EditFoodItem() {
         const fetchFoodItem = async () => {
             try {
                 const token = localStorage.getItem("partnerToken");
-                const { data } = await axios.get(`/api/food-item/${id}`, {
+                const { data } = await axios.get(`/api/partner/food-item/${id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -68,7 +68,7 @@ export default function EditFoodItem() {
             formData.append("description", description);
             if (newImage) formData.append("image", newImage);
 
-            const { data } = await axios.patch(`/api/food-item/${id}`, formData, {
+            const { data } = await axios.patch(`/api/partner/food-item/${id}`, formData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

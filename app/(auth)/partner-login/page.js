@@ -15,7 +15,7 @@ const PartnerLogin = () => {
 
     const onSubmit = async (data) => {
         try {
-            const response = await axios.post("/api/partner-login", data);
+            const response = await axios.post("/api/partner/partner-login", data);
             
             if (response.data.success) {
                 const { token } = response.data;

@@ -24,7 +24,7 @@ const PartnerRegister = () => {
             }
 
             // Send registration data including image URL
-            const response = await axios.post("/api/partner-register", { ...data, imageUrl: imageUrl });
+            const response = await axios.post("/api/partner/partner-register", { ...data, imageUrl: imageUrl });
 
             if (response.data.success) {
                 toast.success("Registration successful!");
