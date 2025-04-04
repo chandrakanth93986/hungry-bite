@@ -31,7 +31,7 @@ const FoodItemsList = ({ foodItems, loading }) => {
     return (
         <div>
             <h3 className="text-xl font-bold mt-6">Your Food Items</h3>
-            {foodItems?.length > 0 ? (
+            {foodItems.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-3">
                     {foodItems.map((item) => (
                         <div key={item._id} className="bg-gray-50 p-4 rounded-lg shadow-sm cursor-pointer"

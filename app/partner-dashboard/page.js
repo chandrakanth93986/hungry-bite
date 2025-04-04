@@ -97,14 +97,23 @@ const PartnerDashboard = () => {
             toast.error("Please fill all fields!");
             return;
         }
-
+    
         try {
             const token = localStorage.getItem("partnerToken");
             await axios.post("/api/partner/food-items", newFoodItem, { headers: { Authorization: `Bearer ${token}` } });
-
-            const res = await axios.get("/api/partner/partner-info", { headers: { Authorization: `Bearer ${token}` } });
-            setFoodItems(res.data.restaurant.foodItems);
-
+    
+            // Fetch updated food items immediately
+            const { data } = await axios.get("/api/partner/food-items", {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+    
+            if (data.success) {
+                setFoodItems(data.foodItems); // Update state with new data
+            } else {
+                toast.error(data.message);
+            }
+    
+            // Reset form fields
             setNewFoodItem({ name: "", price: "", description: "", imageUrl: defaultImg.src });
             setImageUrl(defaultImg.src);
             toast.success("Food item added!");
@@ -112,9 +121,7 @@ const PartnerDashboard = () => {
             toast.error("Error adding food item.");
         }
     };
-
-
-
+    
     // Fetch Surprise Bag Details
     useEffect(() => {
         const fetchSurpriseBag = async () => {
@@ -230,7 +237,7 @@ const PartnerDashboard = () => {
                     {loading ? (
                         <p>Loading food items...</p>
                     ) : (
-                        <FoodItemsList foodItems={foodItems} />
+                        <FoodItemsList foodItems={foodItems || []} />
                     )}
 
                     {/* Add New Food Item */}
