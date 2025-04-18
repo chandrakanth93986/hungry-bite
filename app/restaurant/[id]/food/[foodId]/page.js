@@ -29,6 +29,7 @@ const FoodDetailPage = () => {
     const fetchFoodDetails = async () => {
       try {
         const res = await axios.get(`/api/restaurant/${id}`);
+        console.log(res);
         if (res.data.success) {
           const allItems = res.data.foodItems || [];
           const matchedFood = allItems.find((item) => item._id === foodId);
@@ -57,19 +58,26 @@ const FoodDetailPage = () => {
   const handleAddToCart = async () => {
     try {
       const res = await axios.post("/api/orders", {
-        foodId,
-        quantity,
+        restaurantId: id,
+        foodItems: [
+          {
+            item: foodId,
+            quantity,
+          },
+        ],
       });
-
+  
       if (res.data.success) {
-        toast.success("Added to cart!");
+        toast.success("Order placed successfully!");
+        router.push(`/restaurant/${id}`);
       } else {
         toast.error(res.data.message);
       }
     } catch (err) {
-      toast.error("Failed to add to cart");
+      toast.error("Failed to place order");
     }
   };
+  
 
   const submitReview = async () => {
     try {
@@ -136,7 +144,7 @@ const FoodDetailPage = () => {
             <p className="text-2xl font-bold mb-4">Total: ₹{(food.price * quantity).toFixed(2)}</p>
 
             <Button className="w-full" onClick={handleAddToCart}>
-              Add to Cart
+              Place Order!
             </Button>
           </div>
         </div>

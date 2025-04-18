@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 const SigninWithGoogle = () => {
     const handleGoogle = async () => {
         try {
-            const response = await signIn('google',{callbackUrl: '/personal-space'});
+            const response = await signIn('google',{callbackUrl: '/user-dashboard'});
             console.log(response)
             if (response?.ok) {
                 toast.success('Signin successful');

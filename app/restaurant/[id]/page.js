@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useSession } from 'next-auth/react';
-
+import surprise from "@/public/surprise.jpg";
 
 const RestaurantPage = () => {
     const params = useParams(); // Use useParams() to get dynamic id
@@ -15,6 +15,8 @@ const RestaurantPage = () => {
     const [foodItems, setFoodItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
+    const [surpriseBagQuantity, setSurpriseBagQuantity] = useState(0);
+    const [surpriseBagPrice, setSurpriseBagPrice] = useState(0);
     const router = useRouter();
     const { data: session, status } = useSession();
 
@@ -29,10 +31,12 @@ const RestaurantPage = () => {
         const fetchRestaurantDetails = async () => {
             try {
                 const res = await axios.get(`/api/restaurant/${params?.id}`);
-
+                console.log(res);
                 if (res.data.success) {
                     setRestaurant(res.data.restaurant);
                     setFoodItems(res.data.foodItems);
+                    setSurpriseBagQuantity(res.data.surpriseBag.quantity);
+                    setSurpriseBagPrice(res.data.surpriseBag.price);
                 } else {
                     toast.error("Failed to fetch restaurant details");
                 }
@@ -65,27 +69,136 @@ const RestaurantPage = () => {
     return (
         <div className="min-h-screen p-6 bg-white">
             <div className="max-w-7xl mx-auto py-8 px-4">
-                {restaurant && (
-                    <div className="mb-6 text-center">
-                        <img src={restaurant.imageUrl} alt={restaurant.name} width={500} height={300} className="rounded-2xl shadow-lg mx-auto" />
-                        <h1 className="text-3xl font-bold mt-4">{restaurant.name}</h1>
-                        <p className="text-gray-500">{restaurant.description}</p>
-                    </div>
-                )}
 
                 <div className="flex flex-wrap items-center justify-center mb-4">
                     <input
                         type="text"
-                        placeholder="Want something!"
+                        placeholder="Hungry? Let's Eat..."
                         className="border px-4 py-2 w-full rounded-md shadow-sm"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
 
-                <h2 className="text-2xl font-semibold mb-4">Available Food Items</h2>
+                {restaurant && (
+                    <div className="flex items-center justify-left gap-8 p-6 w-fit max-w-[100%] bg-white shadow-md rounded-lg mb-4">
+
+                        <div>
+                            {restaurant.imageUrl && (
+                                <div className="w-72 h-72 flex-shrink-0">
+                                    <img
+                                        src={restaurant.imageUrl}
+                                        alt={restaurant.restaurantName}
+                                        className="w-full h-full object-cover rounded-lg shadow-lg border-2 border-gray-300"
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex flex-col">
+                            <div className="text-left">
+                                <h1 className="text-4xl font-extrabold text-secondary uppercase tracking-wide">
+                                    {restaurant.restaurantName}
+                                </h1>
+                            </div>
+                            {/* Contact Details */}
+                            <div className="mt-4 text-gray-700 space-y-1 text-lg">
+                                <p>📞 Phone: <strong>{restaurant.phone}</strong></p>
+                                <p>✉️ Email: <strong>{restaurant.email}</strong></p>
+                                <p>📍 Address: <strong>{restaurant.address || "Not provided"}</strong>
+                                </p>
+                                <p>🕒 Open Hours: <strong>{restaurant.openingTime || "Not specified"}</strong> - <strong>{restaurant.closingTime || "Not specified"}</strong></p>
+                                <p>⭐ Ratings: <strong>{restaurant.averageRating || "No ratings yet"}</strong></p>
+                                <p>🥘 Cuisine Type: <strong>{restaurant.type || "Not specified"}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <h2 className="text-2xl font-semibold my-4">Available Food Items</h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {
+                        surpriseBagQuantity > 0 ? (
+                            <Card
+                                key="surprise"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    router.push(`/restaurant/${params.id}/surprise`);
+                                }}
+                                className="border-0 hover:shadow-xl hover:rounded-lg hover:border cursor-pointer transition-transform transform hover:scale-105"
+                            >
+                                <CardContent className="p-4">
+                                    <div className="w-full h-40 overflow-hidden rounded-lg">
+                                        <img
+                                            src={surprise.src}
+                                            className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform"
+                                            loading="lazy"
+                                            style={{ imageRendering: 'auto' }}
+                                        />
+                                    </div>
+                                    <h3 className="text-lg font-semibold mt-3">Surprise!</h3>
+
+                                    <p className="text-gray-500 line-clamp-2 min-h-[48px]">
+                                        A delightful mystery selection of delicious, high-quality food at a fraction of the price! Each Surprise Bag contains a unique assortment of fresh, unsold items carefully chosen by the restaurant—perfect for those who love discovering new flavors while reducing food waste. The contents remain a surprise until pickup, making it an exciting and budget-friendly way to enjoy great food while supporting sustainability!
+                                    </p>
+
+                                    <div className="flex justify-between items-center">
+                                        <p className="text-xl font-bold mt-2">₹{surpriseBagPrice}</p>
+                                    </div>
+
+                                    <Button
+                                        className="mt-3 w-full"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            router.push(`/restaurant/${params.id}/surprise`);
+                                        }}
+                                    >
+                                        Order Now
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        ) : (
+                            <Card
+                                key="surprise"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    router.push(`/restaurant/${params.id}/surprise`);
+                                }}
+                                className="border-0 hover:shadow-xl hover:rounded-lg hover:border cursor-pointer transition-transform transform hover:scale-105"
+                            >
+                                <CardContent className="p-4">
+                                    <div className="w-full h-40 overflow-hidden rounded-lg">
+                                        <img
+                                            src={surprise.src}
+                                            className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform filter grayscale"
+                                            loading="lazy"
+                                            style={{ imageRendering: 'auto' }}
+                                        />
+                                    </div>
+                                    <h3 className="text-lg font-semibold mt-3">Surprise!</h3>
+
+                                    <p className="text-gray-500 line-clamp-2 min-h-[48px]">
+                                        A delightful mystery selection of delicious, high-quality food at a fraction of the price! Each Surprise Bag contains a unique assortment of fresh, unsold items carefully chosen by the restaurant—perfect for those who love discovering new flavors while reducing food waste. The contents remain a surprise until pickup, making it an exciting and budget-friendly way to enjoy great food while supporting sustainability!
+                                    </p>
+
+                                    <div className="flex justify-between items-center">
+                                        <p className="text-xl font-bold mt-2">₹{surpriseBagPrice}</p>
+                                    </div>
+
+                                    <Button
+                                        className="mt-3 w-full"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            router.push(`/restaurant/${params.id}/surprise`);
+                                        }}
+                                    >
+                                        Order Now
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        )
+                    }
                     {foodItems.length > 0 ? (
                         foodItems
                             .filter(food =>
@@ -110,7 +223,7 @@ const RestaurantPage = () => {
 
                                         <h3 className="text-lg font-semibold mt-3">{food.name}</h3>
 
-                                        <p className="text-gray-500 min-h-[48px]">
+                                        <p className="text-gray-500 min-h-[48px] line-clamp-2">
                                             {food.description || ''}
                                         </p>
 

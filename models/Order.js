@@ -3,8 +3,7 @@ import mongoose from "mongoose";
 const OrderSchema = new mongoose.Schema(
   {
     customer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
       required: true,
     },
     restaurant: {
