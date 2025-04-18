@@ -24,6 +24,7 @@ const PartnerDashboard = () => {
         quantity: 0,
         price: "",
     })
+    const [commission, setCommission] = useState(0);
 
     // Fetch Partner Data
     useEffect(() => {
@@ -52,8 +53,13 @@ const PartnerDashboard = () => {
         const fetchOrders = async () => {
             try {
                 const token = localStorage.getItem("partnerToken");
-                const res = await axios.get("/api/partner/orders", { headers: { Authorization: `Bearer ${token}` } });
-                setOrders(res?.data?.pendingOrders);
+                const res = await axios.get("/api/partner/orders", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                console.log(res);
+                setOrders(res?.data?.pendingOrders || []);
+                setCommission(res?.data?.totalCommission || 0);
             } catch (error) {
                 toast.error("Error fetching orders.");
             }
@@ -61,6 +67,7 @@ const PartnerDashboard = () => {
 
         if (partner) fetchOrders();
     }, [partner]);
+
 
     useEffect(() => {
         const fetchFoodItems = async () => {
@@ -97,22 +104,22 @@ const PartnerDashboard = () => {
             toast.error("Please fill all fields!");
             return;
         }
-    
+
         try {
             const token = localStorage.getItem("partnerToken");
             await axios.post("/api/partner/food-items", newFoodItem, { headers: { Authorization: `Bearer ${token}` } });
-    
+
             // Fetch updated food items immediately
             const { data } = await axios.get("/api/partner/food-items", {
                 headers: { Authorization: `Bearer ${token}` },
             });
-    
+
             if (data.success) {
                 setFoodItems(data.foodItems); // Update state with new data
             } else {
                 toast.error(data.message);
             }
-    
+
             // Reset form fields
             setNewFoodItem({ name: "", price: "", description: "", imageUrl: defaultImg.src });
             setImageUrl(defaultImg.src);
@@ -121,7 +128,7 @@ const PartnerDashboard = () => {
             toast.error("Error adding food item.");
         }
     };
-    
+
     // Fetch Surprise Bag Details
     useEffect(() => {
         const fetchSurpriseBag = async () => {
@@ -188,8 +195,27 @@ const PartnerDashboard = () => {
     };
 
     // Dummy Payment Function
-    const handlePayment = () => {
-        toast.success("Payment successful! Commission cleared.");
+    const handlePayment = async () => {
+        try {
+            const token = localStorage.getItem("partnerToken");
+
+            const res = await axios.patch("/api/partner/pay-commission", null, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (res.data.success) {
+                toast.success("Payment successful! Commission cleared.");
+
+                setCommission(0);
+            } else {
+                toast.error("Failed to clear commission.");
+            }
+        } catch (error) {
+            console.error("Payment error:", error);
+            toast.error("Something went wrong during payment.");
+        }
     };
 
     return (
@@ -336,24 +362,111 @@ const PartnerDashboard = () => {
                     </button>
 
                     {/* Orders */}
-                    <h3 className="text-xl font-bold mt-6">Pending Orders</h3>
+                    <h3 className="text-2xl font-bold mt-6 mb-4 text-gray-800">Pending Orders</h3>
+
                     {orders.length > 0 ? (
-                        <ul className="mt-2 bg-gray-50 p-4 rounded-lg shadow-sm">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {orders.map((order) => (
-                                <li key={order._id} className="flex justify-between items-center border-b py-2">
-                                    <span>Order ID: {order._id} | Code: <strong>{order.uniqueCode}</strong></span>
-                                </li>
+                                <div
+                                    key={order._id}
+                                    className="bg-white rounded-2xl shadow-md border hover:shadow-xl transition-all duration-200 p-5"
+                                >
+                                    <div className="flex justify-between items-center mb-3">
+                                        <div>
+                                            <p className="text-sm text-gray-600">
+                                                <span className="font-semibold">Order ID:</span>{" "}
+                                                <span className="text-gray-800">{order._id.slice(-6)}</span>
+                                            </p>
+                                            <p className="text-sm text-gray-600">
+                                                <span className="font-semibold">Customer:</span>{" "}
+                                                {order.customer}
+                                            </p>
+                                            <p className="text-sm text-gray-600">
+                                                <span className="font-semibold">Pickup Code:</span>{" "}
+                                                <span className="text-blue-600 font-bold">{order.uniqueCode}</span>
+                                            </p>
+                                        </div>
+                                        <span className="text-xs bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-medium">
+                                            {order.status}
+                                        </span>
+                                    </div>
+
+                                    <div className="space-y-3 mt-3">
+                                        {order.foodItems.map(({ item, quantity }, index) => (
+                                            <div
+                                                key={index}
+                                                className="flex items-center gap-3 bg-gray-50 p-2 rounded-lg border"
+                                            >
+                                                <img
+                                                    src={item?.imageUrl || "/placeholder.jpg"}
+                                                    alt={item?.name || "Item"}
+                                                    className="w-14 h-14 object-cover rounded-lg border"
+                                                />
+                                                <div className="flex flex-col text-sm text-gray-700">
+                                                    <span className="font-medium">{item?.name || "Item"}</span>
+                                                    <span className="text-xs text-gray-500">Qty: {quantity}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+
+                                        {order.surpriseBagCount > 0 && (
+                                            <div className="flex items-center gap-3 bg-yellow-50 p-2 rounded-lg border">
+                                                <div className="w-14 h-14 bg-yellow-100 flex items-center justify-center rounded-lg text-2xl">
+                                                    🎁
+                                                </div>
+                                                <div className="text-sm text-yellow-700">
+                                                    <p className="font-medium">Surprise Bag</p>
+                                                    <p className="text-xs">Qty: {order.surpriseBagCount}</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="mt-4 space-y-1 text-sm text-gray-700">
+                                        <p><span className="font-semibold">Total Price:</span> ₹{order.totalPrice}</p>
+                                        <p><span className="font-semibold">Commission To Hungry-Bite:</span> ₹{order.commissionAmount}</p>
+                                        <p className="text-xs text-gray-500">
+                                            Placed on: {new Date(order.createdAt).toLocaleString()}
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        onClick={async () => {
+                                            try {
+                                                const res = await axios.patch(`/api/orders/${order._id}/status`, {
+                                                    status: "Completed",
+                                                });
+
+                                                if (res.status === 200) {
+                                                    toast.success("Order marked as completed!");
+                                                    setTimeout(() => {
+                                                        window.location.reload();
+                                                    }, 2000);
+                                                } else {
+                                                    toast.error("Failed to update order status");
+                                                }
+                                            } catch (error) {
+                                                console.error("Error updating order status:", error);
+                                                toast.error("An error occurred while updating the order");
+                                            }
+                                        }}
+                                        className="mt-5 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-xl transition-all"
+                                    >
+                                        Mark as Completed
+                                    </button>
+                                </div>
                             ))}
-                        </ul>
+                        </div>
                     ) : (
-                        <p className="text-gray-500">No pending orders.</p>
+                        <p className="text-gray-500 mt-2">No pending orders.</p>
                     )}
+
 
                     {/* Cumulative Commission */}
                     <div className="mt-5 bg-gray-50 p-4 rounded-lg shadow-sm">
                         <h3 className="text-lg font-bold text-gray-700">Please Pay!</h3>
                         <p className="text-xl font-semibold text-red-500">
-                            ₹{(partner.cumulativeCommission || 0).toFixed(2)}
+                            ₹{commission}
                         </p>
                         <button onClick={handlePayment} className="mt-2 bg-secondary text-white px-4 py-2 rounded-md hover:bg-orange-500 transition">
                             Pay Now

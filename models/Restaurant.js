@@ -43,10 +43,6 @@ const RestaurantSchema = new mongoose.Schema(
             type: String, // Cloudinary URL for restaurant image
             required: true,
         },
-        cumulativeCommission: {
-            type: Number,
-            default: 0, // Total commission owed by the restaurant
-        },
         averageRating: {
             type: Number,
             default: 0, // Updated when new reviews are added

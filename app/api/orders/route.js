@@ -6,6 +6,7 @@ import { generateCode } from "@/lib/generateCode";
 import { sendEmail } from "@/lib/sendEmail";
 import { authOptions } from "../auth/[...nextauth]/options";
 import { getServerSession } from "next-auth/next";
+import SurpriseBag from "@/models/SurpriseBag";
 
 export async function POST(req) {
   try {
@@ -45,9 +46,26 @@ export async function POST(req) {
       processedItems.push({ item, quantity });
     }
 
-    // Add surprise bag cost (assume ₹100 per bag or you can make it dynamic)
-    const surpriseBagPrice = 100;
-    totalPrice += surpriseBagCount * surpriseBagPrice;
+    let surpriseBagPrice = 0;
+
+    if (surpriseBagCount > 0) {
+      const surpriseBag = await SurpriseBag.findOne({ restaurant: restaurantId });
+
+      if (!surpriseBag || surpriseBag.quantity < surpriseBagCount) {
+        return Response.json(
+          { success: false, message: "Not enough surprise bags available" },
+          { status: 400 }
+        );
+      }
+
+      // Update price dynamically from model
+      surpriseBagPrice = surpriseBag.price;
+      totalPrice += surpriseBagCount * surpriseBagPrice;
+
+      // Decrease surprise bag quantity
+      surpriseBag.quantity -= surpriseBagCount;
+      await surpriseBag.save();
+    }
 
     // Calculate 10% commission
     const commissionAmount = parseFloat((totalPrice * 0.1).toFixed(2));
@@ -92,6 +110,34 @@ export async function POST(req) {
     console.error("Order error:", error);
     return Response.json(
       { success: false, message: "Error placing order" },
+      { status: 500 }
+    );
+  }
+}
+
+
+export async function GET(req) {
+  try {
+    await dbConnect();
+
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return Response.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const orders = await Order.find({ customer: session.user._id })
+      .populate("restaurant", "name imageUrl")
+      .populate("foodItems.item", "name imageUrl price")
+      .sort({ createdAt: -1 });
+
+    return Response.json({ success: true, orders }, { status: 200 });
+  } catch (error) {
+    console.error("GET Orders Error:", error);
+    return Response.json(
+      { success: false, message: "Failed to fetch orders" },
       { status: 500 }
     );
   }

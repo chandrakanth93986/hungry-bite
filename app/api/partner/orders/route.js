@@ -20,18 +20,28 @@ export const GET = async (req) => {
         // Fetch orders by status
         const pendingOrders = await Order.find({ status: "Pending" })
             .populate("restaurant")
-            .populate("foodItem")
+            .populate("foodItems.item")
             .lean(); // Optimizes query performance
 
         const completedOrders = await Order.find({ status: "Completed" })
             .populate("restaurant")
-            .populate("foodItem")
+            .populate("foodItems.item")
             .lean();
+
+        const allOrders = await Order.find({})
+            .populate("restaurant")
+            .populate("foodItems.item")
+            .lean();
+
+        const totalCommission = allOrders.reduce((sum, order) => {
+            return sum + (order.commissionAmount || 0);
+        }, 0);
 
         return new Response(JSON.stringify({
             success: true,
             pendingOrders: pendingOrders || [],  // Ensure empty array if no orders
-            completedOrders: completedOrders || []
+            completedOrders: completedOrders || [],
+            totalCommission: totalCommission.toFixed(2),
         }), { status: 200 });
 
     } catch (error) {
