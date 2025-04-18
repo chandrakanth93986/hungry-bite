@@ -70,9 +70,12 @@ const Navbar = () => {
                     <div className='text-xl flex items-center'>
                         <MdWavingHand className='text-2xl' />
                         &nbsp;&nbsp;<span className='text-amber-300 text-3xl font-serif'>{session.data?.user?.username || session.data?.user?.name.split(' ')[0]}</span>
-                    </div>
-                    <Link href={'/personal-space'} className={`${path === '/personal-space' ? 'rounded-md bg-secondary text-black px-4 py-2' : 'text-white'}`}>
-                        Personal Space
+                        </div>
+                        <Link href={'/user-dashboard'} className={`${path === '/user-dashboard' ? 'rounded-md bg-secondary text-black px-4 py-2' : 'text-white'}`}>
+                        Dashboard
+                    </Link>
+                    <Link href={'/user-dashboard/orders'} className={`${path === '/user-dashboard/orders' ? 'rounded-md bg-secondary text-black px-4 py-2' : 'text-white'}`}>
+                        Orders
                     </Link>
                     <button onClick={() => signOut({ callbackUrl: '/' })} className='px-4 py-2 bg-secondary text-black rounded-md'>
                         Sign Out

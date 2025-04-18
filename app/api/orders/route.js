@@ -128,11 +128,11 @@ export async function GET(req) {
       );
     }
 
-    const orders = await Order.find({ customer: session.user._id })
+    const orders = await Order.find({ customer: session.user.email })
       .populate("restaurant", "name imageUrl")
       .populate("foodItems.item", "name imageUrl price")
       .sort({ createdAt: -1 });
-
+    
     return Response.json({ success: true, orders }, { status: 200 });
   } catch (error) {
     console.error("GET Orders Error:", error);
