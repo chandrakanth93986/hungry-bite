@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import userModel from "@/models/User";
+import mongoose from "mongoose"; // Import mongoose to check ObjectId
 
 export const GET = async (req, { params }) => {
     try {
@@ -8,7 +9,14 @@ export const GET = async (req, { params }) => {
 
         const { id } = await params;
 
-        const user = await userModel.findById(id).select("-password"); // Remove password for security
+        let user;
+
+        // Check if the id is a valid ObjectId
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            user = await userModel.findById(id).select("-password");
+        } else {
+            user = await userModel.findOne({ email: id }).select("-password");
+        }
 
         if (!user) {
             return NextResponse.json(

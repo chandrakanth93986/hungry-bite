@@ -27,7 +27,7 @@ export const POST = async (req, { params }) => {
 
         // Add review
         const newReview = {
-            user: session.user._id,
+            user: session.user.email,
             rating,
             comment,
         };
@@ -60,6 +60,7 @@ export const POST = async (req, { params }) => {
 
         return NextResponse.json({ success: true, message: "Review added successfully" });
     } catch (error) {
+        console.error("Error adding review:", error);
         return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
     }
 };

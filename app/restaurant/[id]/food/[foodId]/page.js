@@ -42,10 +42,20 @@ const FoodDetailPage = () => {
           const reviewsWithUserDetails = await Promise.all(
             (matchedFood.reviews || []).map(async (review) => {
               try {
-                const userRes = await axios.get(`/api/user/${review.user}`);
+                const isEmail = review.user.includes("@");
+
+                let userEmail = "Unknown User";
+
+                if (isEmail) {
+                  userEmail = review.user;
+                } else {
+                  const userRes = await axios.get(`/api/user/${review.user}`);
+                  userEmail = userRes.data?.user?.email || "Unknown User";
+                }
+
                 return {
                   ...review,
-                  userEmail: userRes.data?.user?.email || "Unknown User",
+                  userEmail,
                 };
               } catch {
                 return {
@@ -203,7 +213,7 @@ const FoodDetailPage = () => {
                 >
                   <div className="flex justify-between mb-1">
                     <p className="font-semibold">{review.userEmail || "Anonymous"}</p>
-                    <p className="text-yellow-500 text-sm">⭐ {review.rating}</p>
+                    <p className="text-yellow-500 text-sm">⭐ {review.averageRating}</p>
                   </div>
                   <p className="text-gray-600">{review.comment}</p>
                 </div>

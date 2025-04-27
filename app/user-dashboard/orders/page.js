@@ -5,12 +5,14 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { FaCheckCircle, FaHourglass } from 'react-icons/fa';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 const UserOrdersPage = () => {
     const [orders, setOrders] = useState({ pendingOrders: [], completedOrders: [] });
     const [restaurantNames, setRestaurantNames] = useState({});
     const [loading, setLoading] = useState(true);
     const { data: session, status } = useSession();
+    const router = useRouter();
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -79,7 +81,7 @@ const UserOrdersPage = () => {
 
                 <div className="mt-4">
                     <button className={`w-full py-2 px-4 rounded-lg text-white font-bold transition-all duration-300 ${isCompleted ? 'bg-green-500 hover:bg-green-600' : 'bg-yellow-500 hover:bg-yellow-600'
-                        }`}>
+                        }`} onClick={() => router.push(`/user-dashboard`)}>
                         {isCompleted ? 'Get Me Again!' : 'Collect Your Order!'}
                     </button>
                 </div>

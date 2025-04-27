@@ -252,7 +252,7 @@ const PartnerDashboard = () => {
                                 <p>📍 Address: <strong>{partner.address || "Not provided"}</strong>
                                 </p>
                                 <p>🕒 Open Hours: <strong>{partner.openingTime || "Not specified"}</strong> - <strong>{partner.closingTime || "Not specified"}</strong></p>
-                                <p>⭐ Ratings: <strong>{partner.averageRating || "No ratings yet"}</strong></p>
+                                <p>⭐ Ratings: <strong>{partner.averageRating.toFixed(1) || "No ratings yet"}</strong></p>
                                 <p>🥘 Cuisine Type: <strong>{partner.type || "Not specified"}</strong></p>
                             </div>
                         </div>

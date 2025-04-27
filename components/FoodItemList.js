@@ -64,7 +64,7 @@ const FoodItemsList = ({ foodItems, loading }) => {
 
                                 <div className="flex justify-between items-center mt-2">
                                     <p className="text-xl font-bold">₹{item.price}</p>
-                                    <div>{renderStars(item.rating)}</div>
+                                    <div>{renderStars(item.averageRating)}</div>
                                 </div>
 
                                 <Button
