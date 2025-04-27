@@ -104,7 +104,7 @@ const UserDashboard = () => {
                                         </h2>
                                         <p className="text-gray-600 capitalize">{restaurant.type}</p>
                                     </div>
-                                    <p className="text-yellow-500 font-semibold">⭐ {restaurant.averageRating || 'No ratings yet'}</p>
+                                    <p className="text-yellow-500 font-semibold">⭐ {restaurant.averageRating.toFixed(1) || 'No ratings yet'}</p>
                                 </div>
 
                                 <p className="text-gray-500 text-sm mt-2 capitalize">

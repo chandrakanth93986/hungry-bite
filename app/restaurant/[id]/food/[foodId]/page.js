@@ -29,7 +29,6 @@ const FoodDetailPage = () => {
     const fetchFoodDetails = async () => {
       try {
         const res = await axios.get(`/api/restaurant/${id}`);
-        console.log(res);
         if (res.data.success) {
           const allItems = res.data.foodItems || [];
           const matchedFood = allItems.find((item) => item._id === foodId);
@@ -39,9 +38,24 @@ const FoodDetailPage = () => {
             router.push(`/restaurant/${id}`);
             return;
           }
-
           setFood(matchedFood);
-          setReviews(matchedFood.reviews || []);
+          const reviewsWithUserDetails = await Promise.all(
+            (matchedFood.reviews || []).map(async (review) => {
+              try {
+                const userRes = await axios.get(`/api/user/${review.user}`);
+                return {
+                  ...review,
+                  userEmail: userRes.data?.user?.email || "Unknown User",
+                };
+              } catch {
+                return {
+                  ...review,
+                  userEmail: "Unknown User",
+                };
+              }
+            })
+          );
+          setReviews(reviewsWithUserDetails);
         } else {
           toast.error("Failed to load food details");
         }
@@ -66,7 +80,7 @@ const FoodDetailPage = () => {
           },
         ],
       });
-  
+
       if (res.data.success) {
         toast.success("Order placed successfully!");
         router.push(`/restaurant/${id}`);
@@ -77,25 +91,25 @@ const FoodDetailPage = () => {
       toast.error("Failed to place order");
     }
   };
-  
+
 
   const submitReview = async () => {
+    if (rating === 0) return toast.error("Please select a rating");
     try {
-      const res = await axios.post(`/api/food/${foodId}/review`, {
+      console.log(foodId);
+      const res = await axios.post(`/api/food-items/review/${foodId}`, {
         rating,
         comment,
       });
-
       if (res.data.success) {
         toast.success("Review submitted!");
-        setReviews([...reviews, { rating, comment, user: session?.user?.name }]);
         setRating(0);
         setComment("");
       } else {
         toast.error(res.data.message);
       }
     } catch (err) {
-      toast.error("Failed to submit review");
+      toast.error("Error submitting review");
     }
   };
 
@@ -122,14 +136,14 @@ const FoodDetailPage = () => {
 
           <div className="flex-1">
             <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold mb-2">{food.name}</h1>
-            <div className="flex items-center gap-2 mb-4">
-              <p className="text-yellow-500 font-semibold text-lg">
-                ⭐ {food.averageRating?.toFixed(1) || "No rating"}
-              </p>
-              <p className="text-gray-500 text-sm">({reviews.length} reviews)</p>
+              <h1 className="text-3xl font-bold mb-2">{food.name}</h1>
+              <div className="flex items-center gap-2 mb-4">
+                <p className="text-yellow-500 font-semibold text-lg">
+                  ⭐ {food.averageRating?.toFixed(1) || "No rating"}
+                </p>
+                <p className="text-gray-500 text-sm">({reviews.length} reviews)</p>
               </div>
-              </div>
+            </div>
             <p className="text-gray-600 mb-4">{food.description || "No description available."}</p>
 
             <div className="flex items-center gap-4 mb-4">
@@ -188,7 +202,7 @@ const FoodDetailPage = () => {
                   className="bg-white p-4 rounded-md shadow border border-gray-100"
                 >
                   <div className="flex justify-between mb-1">
-                    <p className="font-semibold">{review.user || "Anonymous"}</p>
+                    <p className="font-semibold">{review.userEmail || "Anonymous"}</p>
                     <p className="text-yellow-500 text-sm">⭐ {review.rating}</p>
                   </div>
                   <p className="text-gray-600">{review.comment}</p>

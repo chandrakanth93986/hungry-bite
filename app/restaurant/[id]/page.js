@@ -108,7 +108,7 @@ const RestaurantPage = () => {
                                 <p>📍 Address: <strong>{restaurant.address || "Not provided"}</strong>
                                 </p>
                                 <p>🕒 Open Hours: <strong>{restaurant.openingTime || "Not specified"}</strong> - <strong>{restaurant.closingTime || "Not specified"}</strong></p>
-                                <p>⭐ Ratings: <strong>{restaurant.averageRating || "No ratings yet"}</strong></p>
+                                <p>⭐ Ratings: <strong>{restaurant.averageRating.toFixed(1) || "No ratings yet"}</strong></p>
                                 <p>🥘 Cuisine Type: <strong>{restaurant.type || "Not specified"}</strong></p>
                             </div>
                         </div>
