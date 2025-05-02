@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { FaCheckCircle, FaHourglass } from 'react-icons/fa';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import surprise from '@/public/surprise.jpg';
 
 const UserOrdersPage = () => {
     const [orders, setOrders] = useState({ pendingOrders: [], completedOrders: [] });
@@ -51,12 +52,12 @@ const UserOrdersPage = () => {
     const OrderCard = ({ order, isCompleted }) => (
         <div className={`transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl rounded-xl border overflow-hidden ${isCompleted ? 'border-green-300 bg-green-50' : 'border-yellow-300 bg-yellow-50'} shadow-md`}>
             {/* First Image */}
-            {order.foodItems[0]?.item?.imageUrl && (
+            {order.foodItems && (
                 <div className="w-full h-40 overflow-hidden rounded-lg">
 
                     <img
-                        src={order.foodItems[0].item.imageUrl}
-                        alt={order.foodItems[0].item.name}
+                        src={order.foodItems[0]?.item?.imageUrl || surprise.src}
+                        alt={order.foodItems[0]?.item?.name || 'Surprise'}
                         className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform"
                         loading="lazy"
                         style={{ imageRendering: 'auto' }}
@@ -76,7 +77,7 @@ const UserOrdersPage = () => {
                     <p><span className="font-medium">Pickup Code:</span> <span className='font-bold text-blue-600'>{order.uniqueCode}</span></p>
                     <p><span className="font-medium">Total:</span> ₹{order.totalPrice.toFixed(2)}</p>
                     <p><span className="font-medium">Restaurant:</span> <span className="capitalize font-bold">{restaurantNames[order.restaurant._id] || 'Loading...'}</span></p>
-                    <p><span className="font-medium">Items:</span> {order.foodItems.map(item => item.item.name).join(', ')}</p>
+                    <p><span className="font-medium">Items:</span> {order.foodItems.map(item => item.item.name).join(', ') || 'Surprise Bag'}</p>
                 </div>
 
                 <div className="mt-4">

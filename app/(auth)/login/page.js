@@ -46,7 +46,7 @@ const Login = () => {
         return toast.error('Login Failed!')
       }
       if (result?.url) {
-        router.push("/user-dashboard");
+        router.push("/entering");
         toast.success('Login Successful!')
       }
     } catch (error) {
