@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 const UserDashboard = () => {
     const { data: session, status } = useSession();
@@ -46,6 +47,27 @@ const UserDashboard = () => {
         }
     }, [status]);
 
+    const StarRatingDisplay = ({ rating }) => {
+        const roundedRating = Math.round(rating * 2) / 2; // Round to nearest 0.5
+        const fullStars = Math.floor(roundedRating);
+        const hasHalfStar = roundedRating % 1 !== 0;
+        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    
+        return (
+            <div className="flex items-center gap-1">
+                {[...Array(fullStars)].map((_, i) => (
+                    <FaStar key={`full-${i}`} className="text-yellow-500" />
+                ))}
+                {hasHalfStar && <FaStarHalfAlt className="text-yellow-500" />}
+                {[...Array(emptyStars)].map((_, i) => (
+                    <FaRegStar key={`empty-${i}`} className="text-yellow-500" />
+                ))}
+                <span className="ml-1 text-sm font-medium text-gray-700">{rating.toFixed(1)}</span>
+            </div>
+        );
+    };
+    
+    
     if (status === 'loading') {
         return (
             <div className="min-h-screen flex justify-center items-center bg-primary">
@@ -85,7 +107,7 @@ const UserDashboard = () => {
                         .map((restaurant) => (
                             <div
                                 key={restaurant._id}
-                                className="p-4 rounded-lg cursor-pointer bg-white transition-transform transform hover:border hover:scale-105 hover:shadow-lg"
+                                className="p-4 rounded-lg bg-white cursor-pointer transition-transform transform hover:border hover:scale-105 hover:shadow-lg"
                                 onClick={() => router.push(`/restaurant/${restaurant._id}`)}
                             >
                                 <div className="w-full h-36 md:h-40 overflow-hidden rounded-md bg-gray-100">
@@ -104,7 +126,9 @@ const UserDashboard = () => {
                                         </h2>
                                         <p className="text-gray-600 capitalize">{restaurant.type}</p>
                                     </div>
-                                    <p className="text-yellow-500 font-semibold">⭐ {restaurant.averageRating.toFixed(1) || 'No ratings yet'}</p>
+                                    <div className="mt-1">{
+                                        <StarRatingDisplay rating={restaurant.averageRating || 0} />
+                                    }</div>
                                 </div>
 
                                 <p className="text-gray-500 text-sm mt-2 capitalize">

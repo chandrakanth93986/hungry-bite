@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useSession } from 'next-auth/react';
 import surprise from "@/public/surprise.jpg";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 const RestaurantPage = () => {
     const params = useParams(); // Use useParams() to get dynamic id
@@ -48,6 +49,26 @@ const RestaurantPage = () => {
         };
         fetchRestaurantDetails();
     }, [params?.id]);
+
+    const renderStars = (rating) => {
+        const roundedRating = Math.round(rating * 2) / 2; // Round to nearest 0.5
+        const fullStars = Math.floor(roundedRating);
+        const hasHalfStar = roundedRating % 1 !== 0;
+        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+        return (
+            <div className="flex items-center gap-1">
+                {[...Array(fullStars)].map((_, i) => (
+                    <FaStar key={`full-${i}`} className="text-yellow-500" />
+                ))}
+                {hasHalfStar && <FaStarHalfAlt className="text-yellow-500" />}
+                {[...Array(emptyStars)].map((_, i) => (
+                    <FaRegStar key={`empty-${i}`} className="text-yellow-500" />
+                ))}
+                <span className="ml-1 text-sm font-medium text-gray-700">{rating.toFixed(1)}</span>
+            </div>
+        );
+    };
 
     if (status === 'loading') {
         return (
@@ -229,9 +250,9 @@ const RestaurantPage = () => {
 
                                         <div className="flex justify-between items-center">
                                             <p className="text-xl font-bold mt-2">₹{food.price}</p>
-                                            <p className="text-yellow-500 text-sm mt-1">
-                                                ⭐ {food.averageRating ? food.averageRating.toFixed(1) : 'No rating'}
-                                            </p>
+                                            <div className="mt-1">
+                                                {renderStars(food.averageRating)}
+                                            </div>
                                         </div>
 
                                         <Button
